@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+set -euo pipefail
+
+cd /opt/fritzbox-agent
+source /opt/fritzbox-agent/.env
+
+exec python3 app.py

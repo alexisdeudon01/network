@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FRITZ!Box Diagnostics</title>
+  <style>
+    body { font-family: sans-serif; margin: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; }
+    .topology { margin-top: 16px; padding: 12px; border-radius: 8px; color: #fff; }
+    .btn { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; margin-right: 8px; }
+    .btn-primary { background: #1976d2; color: #fff; }
+    .btn-danger { background: #b00020; color: #fff; }
+    pre { background: #f8f8f8; padding: 12px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h2>FRITZ!Box Network Diagnostic</h2>
+
+  <div class="grid">
+    <div class="card"><strong>Download</strong><br>{{ metrics.download }} Mbps</div>
+    <div class="card"><strong>Upload</strong><br>{{ metrics.upload }} Mbps</div>
+    <div class="card"><strong>Ping</strong><br>{{ metrics.ping }} ms</div>
+    <div class="card"><strong>Powerline RX</strong><br>{{ metrics.rx }} Mbps</div>
+    <div class="card"><strong>Powerline TX</strong><br>{{ metrics.tx }} Mbps</div>
+  </div>
+
+  <div class="topology" style="background: linear-gradient(90deg, {{ rx_color }}, {{ tx_color }});">
+    Device → [Adapter B] → Electrical Grid → [Adapter A] → FRITZ!Box → ISP
+  </div>
+
+  <div style="margin-top: 16px;">
+    <button class="btn btn-primary" onclick="runDiagnosis()">Run Diagnosis Now</button>
+    <button class="btn btn-danger" onclick="rebootBox()">Reboot FRITZ!Box</button>
+  </div>
+
+  <h3>Latest Report</h3>
+  <pre id="report">No report yet.</pre>
+
+  <script>
+    async function runDiagnosis() {
+      const res = await fetch('./api/diagnose', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('report').textContent = JSON.stringify(data, null, 2);
+    }
+    async function rebootBox() {
+      const res = await fetch('./api/reboot', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('report').textContent = JSON.stringify(data, null, 2);
+    }
+    setInterval(() => window.location.reload(), {{ refresh_seconds * 1000 }});
+  </script>
+</body>
+</html>

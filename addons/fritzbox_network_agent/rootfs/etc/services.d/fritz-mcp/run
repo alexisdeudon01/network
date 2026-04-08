@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+set -euo pipefail
+
+source /opt/fritzbox-agent/.env
+
+# Prefer network transport for HA MCP integration; fall back to stdio-capable binary defaults.
+exec "${MCP_BINARY}" \
+  --transport sse \
+  --host "${MCP_HOST}" \
+  --port "${MCP_PORT}"

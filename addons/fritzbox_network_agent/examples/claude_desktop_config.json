@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "fritzbox-network-agent": {
+      "command": "ncat",
+      "args": ["192.168.178.10", "8098"],
+      "env": {}
+    }
+  }
+}
