@@ -1,0 +1,66 @@
+title: FRITZ!Box Network Health
+views:
+  - title: Network
+    path: network
+    cards:
+      - type: grid
+        columns: 3
+        cards:
+          - type: gauge
+            entity: sensor.speedtest_download
+            min: 0
+            max: 1000
+            name: Download
+          - type: gauge
+            entity: sensor.speedtest_upload
+            min: 0
+            max: 300
+            name: Upload
+          - type: gauge
+            entity: sensor.speedtest_ping
+            min: 0
+            max: 100
+            name: Ping
+          - type: gauge
+            entity: sensor.fritz_powerline_1260e_rx_rate
+            min: 0
+            max: 1200
+            name: Powerline RX
+          - type: gauge
+            entity: sensor.fritz_powerline_1260e_tx_rate
+            min: 0
+            max: 1200
+            name: Powerline TX
+      - type: picture-elements
+        image: /local/fritz-topology.png
+        elements:
+          - type: state-label
+            entity: sensor.fritz_powerline_1260e_rx_rate
+            style:
+              top: 40%
+              left: 30%
+              color: white
+          - type: state-label
+            entity: sensor.fritz_powerline_1260e_tx_rate
+            style:
+              top: 40%
+              left: 70%
+              color: white
+      - type: conditional
+        conditions:
+          - condition: or
+            conditions:
+              - condition: numeric_state
+                entity: sensor.fritz_powerline_1260e_rx_rate
+                below: 200
+              - condition: state
+                entity: binary_sensor.fritz_connection_status
+                state: 'off'
+        card:
+          type: button
+          entity: button.fritz_box_reboot
+          name: Reboot FRITZ!Box
+          icon: mdi:restart
+      - type: iframe
+        url: /api/hassio_ingress/REPLACE_WITH_ADDON_SLUG
+        aspect_ratio: 60%
